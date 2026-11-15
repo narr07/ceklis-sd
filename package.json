@@ -1,0 +1,48 @@
+{
+  "name": "ceklis-sd",
+  "private": true,
+  "type": "module",
+  "version": "1.2.0",
+  "description": "Checklist & template administrasi Sekolah Dasar (Web & Desktop Offline).",
+  "license": "MIT",
+  "scripts": {
+    "dev": "nuxt dev",
+    "dev:desktop": "NUXT_TARGET=desktop nuxt dev",
+    "generate:desktop": "NUXT_TARGET=desktop nuxt generate",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint": "eslint app server tests nuxt.config.ts vitest.config.ts eslint.config.mjs",
+    "lint:fix": "eslint app server tests nuxt.config.ts vitest.config.ts eslint.config.mjs --fix",
+    "typecheck": "nuxt typecheck",
+    "test": "vitest run",
+    "test:rust": "cargo test --manifest-path src-tauri/Cargo.toml",
+    "clippy": "cargo clippy --all-targets --manifest-path src-tauri/Cargo.toml -- -D warnings",
+    "tauri": "tauri",
+    "desktop:dev": "tauri dev",
+    "desktop:build": "tauri build",
+    "brand": "python3 scripts/logo.py node_modules/@fontsource/plus-jakarta-sans/files public/brand"
+  },
+  "dependencies": {
+    "@fontsource-variable/plus-jakarta-sans": "5.3.0",
+    "@iconify-json/lucide": "1.2.155",
+    "@nuxt/ui": "4.12.0",
+    "@tauri-apps/api": "2.12.4",
+    "@tauri-apps/plugin-notification": "2.8.1",
+    "docx": "9.15.4",
+    "nuxt": "4.6.4",
+    "tailwindcss": "4.3.5",
+    "vue": "3.5.45"
+  },
+  "devDependencies": {
+    "@fontsource/plus-jakarta-sans": "5.3.0",
+    "@nuxt/eslint": "1.17.0",
+    "@tauri-apps/cli": "2.12.4",
+    "@types/node": "26.6.6",
+    "eslint": "10.15.0",
+    "typescript": "5.9.3",
+    "vitest": "5.1.0",
+    "vue-tsc": "3.3.14"
+  }
+}

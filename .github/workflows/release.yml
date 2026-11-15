@@ -1,0 +1,43 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Instal dependensi
+        run: bun install --frozen-lockfile
+
+      - name: Test sebelum rilis
+        run: |
+          bun run lint
+          bun run typecheck
+          bun run test
+          bun run test:rust
+
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tauriScript: bun run tauri
+          tagName: ${{ github.ref_name }}
+          releaseName: Ceklis SD ${{ github.ref_name }}
+          releaseBody: Installer Windows (.exe NSIS dan .msi) dibangun otomatis dari source repo ini. Installer belum ditandatangani, sehingga Windows SmartScreen akan menampilkan peringatan saat instalasi pertama.
+          releaseDraft: false
+          prerelease: false

@@ -1,0 +1,38 @@
+[package]
+name = "ceklis-sd"
+version = "1.2.0"
+description = "Checklist & template administrasi Sekolah Dasar (Web & Desktop Offline)."
+authors = ["Dinar Permadi Yusup"]
+license = "MIT"
+edition = "2024"
+rust-version = "1.90"
+
+[lib]
+name = "ceklis_sd_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "=2.7.4", features = [] }
+
+[dependencies]
+tauri = { version = "=2.12.5", features = [] }
+tauri-plugin-dialog = "=2.8.4"
+tauri-plugin-opener = "=2.7.3"
+serde = { version = "=1.0.229", features = ["derive"] }
+serde_json = "=1.0.154"
+blake3 = "=1.8.7"
+chrono = { version = "=0.4.45", default-features = false, features = ["clock", "std"] }
+tauri-plugin-notification = "=2.8.1"
+
+[dev-dependencies]
+tempfile = "=3.27.0"
+
+[profile.dev]
+incremental = true
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "s"
+panic = "abort"
+strip = true

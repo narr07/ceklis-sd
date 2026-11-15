@@ -1,0 +1,16 @@
+node_modules/
+.nuxt/
+.output/
+.data/
+dist/
+src-tauri/target/
+src-tauri/gen/schemas/
+.DS_Store
+*.log
+*.json.tmp
+
+# Data asli sekolah (nama siswa, NIK, NIP, biodata GTK) & dokumen referensi: jangan pernah di-commit
+data-pribadi/
+
+# Indeks alat bantu lokal
+graft/

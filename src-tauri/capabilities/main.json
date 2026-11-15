@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main",
+  "description": "Akses disk dan folder data lewat command Rust Ceklis SD. Izin tambahan hanya notifikasi pengingat tenggat.",
+  "windows": ["main"],
+  "permissions": ["core:default", "notification:default"]
+}

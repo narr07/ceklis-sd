@@ -1,0 +1,67 @@
+export type Align = 'left' | 'center' | 'right' | 'justify'
+
+export interface Sign {
+  atas?: string // mis. "Sukamaju, 8 Januari 2026"
+  jabatan: string // bisa multi-baris dengan \n
+  nama: string
+  nip?: string
+  meterai?: boolean
+}
+
+export type Block =
+  | { t: 'kop' }
+  | { t: 'title', text: string, sub?: string }
+  | { t: 'p', text: string, align?: Align, bold?: boolean, indent?: boolean, italic?: boolean }
+  | { t: 'meta', rows: [string, string][], bold?: number[] }
+  | { t: 'list', items: string[], style?: 'num' | 'alpha' | 'bullet' }
+  | { t: 'table', head: string[], rows: string[][], widths?: number[], tall?: boolean, align?: Align[] }
+  | { t: 'sign', left?: Sign, right?: Sign, center?: Sign }
+  | { t: 'space', n?: number }
+  | { t: 'break' }
+  | { t: 'photos', n: number, captions?: string[] }
+
+/** Teks dengan **tebal** sederhana */
+export function parseBold(text: string): { text: string, bold: boolean }[] {
+  return text.split(/(\*\*[^*]+\*\*)/g).filter(Boolean).map(s =>
+    s.startsWith('**') ? { text: s.slice(2, -2), bold: true } : { text: s, bold: false })
+}
+
+const POLA_ANGKA = /^-?(Rp\s?)?[\d.,]+(\s*\(\d+([.,]\d+)?%\))?$/i
+const KOLOM_TENGAH = /^(no\.?|jml|jtm|jumlah jam|satuan|l\/p|jk|%|kondisi|waktu)$/i
+
+/**
+ * Perataan tiap kolom tabel: pakai `align` bila ditulis, selain itu ditebak:
+ * kolom nomor & kode pendek di tengah, kolom yang seluruh isinya angka/rupiah rata kanan.
+ */
+export function alignKolom(b: Extract<Block, { t: 'table' }>): Align[] {
+  return b.head.map((h, i) => {
+    const manual = b.align?.[i]
+    if (manual) return manual
+    if (KOLOM_TENGAH.test(h.trim())) return 'center'
+    const isi = b.rows.map(r => (r[i] ?? '').replace(/\*\*/g, '').trim()).filter(Boolean)
+    if (isi.length && isi.every(s => POLA_ANGKA.test(s))) return 'right'
+    return 'left'
+  })
+}
+
+/** Lebar kolom dalam persen yang dijamin berjumlah 100. */
+export function lebarKolom(b: Extract<Block, { t: 'table' }>): number[] {
+  const raw = b.widths?.length === b.head.length ? b.widths : b.head.map(() => 1)
+  const total = raw.reduce((a, n) => a + n, 0) || 1
+  return raw.map(n => (n / total) * 100)
+}
+
+/** Kolom tanda tangan dengan jumlah baris kepala yang disamakan, agar nama sejajar */
+export function signColumns(b: Extract<Block, { t: 'sign' }>): (Sign | undefined)[] {
+  const cols = b.center && (b.left || b.right) ? [b.left, b.center, b.right] : b.center ? [undefined, b.center, undefined] : [b.left, b.right]
+  const head = (s?: Sign) => s ? (s.atas ? s.atas.split('\n').length : 0) + s.jabatan.split('\n').length : 0
+  const max = Math.max(...cols.map(head))
+  return cols.map((s) => {
+    if (!s) return s
+    const atas = s.atas ?? ''
+    const nAtas = s.atas ? atas.split('\n').length : 0
+    const pad = max - head(s)
+    // tambahkan baris kosong di atas agar jabatan & nama sejajar
+    return { ...s, atas: [...Array(pad).fill(' '), ...(nAtas ? atas.split('\n') : [])].join('\n') || undefined }
+  })
+}

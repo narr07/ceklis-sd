@@ -1,0 +1,15 @@
+{
+  "name": "Ceklis SD",
+  "short_name": "Ceklis SD",
+  "description": "Checklist & template administrasi untuk operator, kepala sekolah, dan bendahara SD",
+  "lang": "id",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FBFCFB",
+  "theme_color": "#0E6E66",
+  "icons": [
+    { "src": "/brand/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/brand/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
