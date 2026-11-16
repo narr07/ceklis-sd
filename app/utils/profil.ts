@@ -11,6 +11,8 @@ export interface Gtk {
   tmt?: string
   /** TMT bertugas di sekolah ini (YYYY-MM-DD). */
   tmtSekolah?: string
+  /** Pangkat/golongan ruang, mis. "Penata Tk. I, III/d" atau "Guru Ahli Pertama / IX". */
+  pangkat?: string
 }
 
 export interface Profil {
@@ -34,6 +36,10 @@ export interface Profil {
   operator: string
   nipOperator: string
   komite: string
+  /** Pengawas pembina (penilai kinerja kepala sekolah, verifikator SK beban mengajar). */
+  pengawas?: string
+  nipPengawas?: string
+  pangkatPengawas?: string
   logoKiri?: string
   logoKanan?: string
   kopAlamat?: string // opsional: override baris alamat pada kop surat

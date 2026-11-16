@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.3.0
+- **SK Beban Mengajar (SKBM) & Jadwal Pelajaran** (halaman `/skbm`): tugas tiap guru (kepala sekolah, guru kelas, guru mapel) ditebak dari Profil dan bisa diubah; struktur JJM per kelas; jumlah siswa per rombel dari SPTJM atau manual, termasuk rekap peserta pramuka; tugas bimbingan. Menghasilkan SK + Lampiran I (pemetaan jam, mendatar), II (siswa per rombel, mendatar), III (bimbingan), IV (pengelolaan kinerja) dalam satu file .docx, dengan rujukan diktum ke lampiran yang benar.
+- **Penyusun jadwal 5 hari**: jam guru mapel (PAI, PJOK, dll.) ditempatkan sebagai blok berurutan dengan backtracking sehingga satu guru tidak pernah mengajar dua kelas pada jam yang sama; sisa jam guru kelas disebar per 2 jam. Jadwal bisa diubah per sel, bentrok dan selisih JJM ditandai, dan bisa diunduh sebagai .docx.
+- **Mesin dokumen**: halaman mendatar per section, judul tabel bertingkat, tabel huruf kecil, baris pangkat pada tanda tangan, dan indentasi gantung untuk daftar bernomor (Menimbang/Mengingat) di semua SK.
+- **Profil**: kolom pangkat/golongan per GTK dan data pengawas pembina.
+- **Situs resmi** di `website/` (ceklis.permadi.dev): beranda, panduan, catatan rilis, dan tombol unduh yang otomatis mengambil installer dari GitHub Releases.
+
 ## 1.2.0
 - **Privasi:** data bawaan diganti profil contoh (placeholder, tanpa NIP/NUPTK); daftar siswa, BB/TB, dan biodata GTK bawaan dikosongkan. Test penjaga menolak angka mirip NIP/NIK di file data. Folder `data-pribadi/` untuk dokumen referensi asli di-*gitignore*.
 - **Sinkronisasi server:** token wajib dan berlaku per NPSN (`NUXT_SYNC_TOKENS`); endpoint mati bila token belum diatur. Perbandingan token waktu-konstan, batas body 10 MB, validasi isi, dan deteksi konflik (409) dengan pilihan ambil/timpa. Token & URL tidak lagi ikut file ekspor, backup, atau data yang dikirim, dan tidak lagi ditanam saat build.

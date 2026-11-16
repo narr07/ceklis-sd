@@ -31,6 +31,22 @@ jobs:
           bun run test
           bun run test:rust
 
+      # Catatan rilis diambil dari bagian versi ini di CHANGELOG.md (tampil juga di halaman Rilis situs).
+      - name: Siapkan catatan rilis
+        id: catatan
+        shell: bash
+        run: |
+          versi="${GITHUB_REF_NAME#v}"
+          isi="$(awk -v v="## ${versi}" '$0 == v {ambil=1; next} /^## / && ambil {exit} ambil' CHANGELOG.md)"
+          {
+            echo 'isi<<CATATAN_AKHIR'
+            echo "${isi}"
+            echo ''
+            echo '---'
+            echo 'Unduh **Installer .exe** (disarankan) atau paket **.msi** di bawah. Installer dibangun otomatis oleh GitHub Actions dari kode sumber repo ini dan belum ditandatangani, sehingga Windows SmartScreen akan menampilkan peringatan saat pemasangan pertama: pilih "Info lainnya", lalu "Tetap jalankan".'
+            echo 'CATATAN_AKHIR'
+          } >> "$GITHUB_OUTPUT"
+
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -38,6 +54,6 @@ jobs:
           tauriScript: bun run tauri
           tagName: ${{ github.ref_name }}
           releaseName: Ceklis SD ${{ github.ref_name }}
-          releaseBody: Installer Windows (.exe NSIS dan .msi) dibangun otomatis dari source repo ini. Installer belum ditandatangani, sehingga Windows SmartScreen akan menampilkan peringatan saat instalasi pertama.
+          releaseBody: ${{ steps.catatan.outputs.isi }}
           releaseDraft: false
           prerelease: false

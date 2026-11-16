@@ -197,7 +197,7 @@ app/
 | **v1.0 (MVP)** | F1–F5, 17 template, ±90 item checklist, localStorage |
 | **v1.1** | Pengingat tenggat, ekspor checklist ke PDF, template SPJ honor & daftar penerimaan honor (dengan PPh 21 TER), versi desktop Windows |
 | **v1.2** | Data bawaan tanpa data pribadi, sinkronisasi dengan token per sekolah & deteksi konflik, backup harian, Daftar 1 & impor SPTJM terdokumentasi, test otomatis |
-| **Berikutnya** | SK Pembagian Tugas mengikuti format SKBM (4 lampiran: pembagian tugas, jam per kelas, tugas tambahan) |
+| **v1.3** | SK Beban Mengajar (SK + Lampiran I–IV) dan penyusun jadwal pelajaran 5 hari tanpa bentrok guru mapel |
 | **v2.0** | Login (akun belajar.id/Google), database (Supabase/Nuxt Hub), multi-user satu sekolah (kepsek melihat progres operator & bendahara), riwayat versi dokumen |
 | **v2.1** | Mode dinas/korwil: memantau progres banyak sekolah |
 | **v3.0** | Kalkulator batas komponen BOS (honor 20%, buku 10%, pemeliharaan 20%) dari impor Excel RKAS ARKAS |

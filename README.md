@@ -57,6 +57,7 @@ Kode sumber **tidak boleh** memuat data sekolah sungguhan (nama siswa, NIK, NIP,
 
 - **Checklist per peran dan per periode**: centang, catatan, progres, pengingat tenggat, serta ekspor PDF/cetak. Periode bawaan mengikuti tanggal hari ini.
 - **19 template + Paket RKAS lengkap**: isi formulir, sesuaikan kop surat & logo, lihat pratinjau langsung, lalu unduh `.docx`.
+- **SK Beban Mengajar & Jadwal Pelajaran**: pembagian tugas & pemetaan jam (SK + Lampiran I–IV) dan penyusun jadwal 5 hari yang mencegah guru PAI/PJOK/mapel bentrok.
 - **Daftar 1 (Laporan Bulanan SD)**: rekap siswa, umur, BB/TB, keadaan guru, sarpras, dan absen, dengan cetak F4/A4 serta impor/ekspor Excel.
 - **Impor SPTJM Dapodik**: PDF dibaca langsung di perangkat untuk mengisi profil, GTK, rombel, sarpras, dan peserta didik.
 - **Dasar aturan**: ringkasan Permendikdasmen 8/2026 (Juknis BOSP), 15/2026 (belanja sekolah), Dapodik, pajak/Coretax, dan pengelolaan kinerja. Setiap ringkasan mencantumkan tanggal pemeriksaan dan tautan sumber resmi bila sudah ada. Isinya alat bantu, bukan rujukan hukum.

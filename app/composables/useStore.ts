@@ -2,6 +2,8 @@ import type { Profil } from '~/utils/profil'
 import { profilAwal } from '~/utils/profil'
 import type { Daftar1State } from '~/utils/daftar1'
 import { cloneDaftar1DefaultState, mergeDaftar1State } from '~/utils/daftar1'
+import type { SkbmState } from '~/utils/skbm'
+import { mergeSkbm } from '~/utils/skbm'
 import type { Peran, Semester } from '~/data/checklists'
 import { daftarTahunAjaran, periodeSekarang } from '~/utils/tanggal'
 
@@ -75,6 +77,7 @@ export interface DatabaseSnapshot {
   progress: Record<string, Status>
   isian: Record<string, Record<string, string>>
   daftar1?: Daftar1State
+  skbm?: SkbmState
 }
 
 const DEFAULT_SYNC: SyncConfig = {
@@ -147,6 +150,18 @@ export function useDaftar1() {
     }
   }
   return { daftar1, reset }
+}
+
+/* ── SK Beban Mengajar & jadwal pelajaran ── */
+export function useSkbm() {
+  const hydrated = useState<boolean>('client-hydrated', () => false)
+  const skbm = useState<SkbmState>('skbm', () => mergeSkbm(hydrated.value ? load<Partial<SkbmState>>('ceklis:skbm', {}) : null))
+  watch(skbm, (v) => {
+    if (!import.meta.client || !hydrated.value) return
+    simpanLokal('ceklis:skbm', v)
+    tandaiPerubahanDb()
+  }, { deep: true })
+  return { skbm }
 }
 
 /* ── Progres checklist ── */
@@ -225,6 +240,7 @@ export function kumpulkanDatabaseSnapshot(): DatabaseSnapshot {
     progress,
     isian,
     daftar1: structuredClone(toRaw(daftar1.value)),
+    skbm: structuredClone(toRaw(useSkbm().skbm.value)),
   }
 }
 
@@ -253,7 +269,7 @@ export function terapkanDatabaseSnapshot(raw: unknown): boolean {
     return true
   }
 
-  const dikenali = ['profil', 'periode', 'progress', 'isian', 'daftar1'].some(k => k in payload)
+  const dikenali = ['profil', 'periode', 'progress', 'isian', 'daftar1', 'skbm'].some(k => k in payload)
   if (!dikenali) return false
 
   if (payload.profil && typeof payload.profil === 'object') {
@@ -297,6 +313,12 @@ export function terapkanDatabaseSnapshot(raw: unknown): boolean {
     }
   }
 
+  if (payload.skbm && typeof payload.skbm === 'object') {
+    const { skbm } = useSkbm()
+    skbm.value = mergeSkbm(payload.skbm as Partial<SkbmState>)
+    simpanLokal('ceklis:skbm', skbm.value)
+  }
+
   if (payload.daftar1 && typeof payload.daftar1 === 'object') {
     const { daftar1 } = useDaftar1()
     daftar1.value = mergeDaftar1State(payload.daftar1 as Partial<Daftar1State>)
@@ -329,6 +351,7 @@ export function useDatabaseSync() {
     periode.value = load('ceklis:periode', periodeAwal())
     syncConfig.value = load('ceklis:sync', { ...DEFAULT_SYNC })
     daftar1.value = mergeDaftar1State(load('ceklis:daftar1', cloneDaftar1DefaultState()))
+    useSkbm().skbm.value = mergeSkbm(load<Partial<SkbmState>>('ceklis:skbm', {}))
 
     try {
       for (let i = 0; i < localStorage.length; i++) {

@@ -55,6 +55,7 @@ const links = computed<NavigationMenuItem[][]>(() => {
     [
       { label: 'Beranda', to: '/', icon: 'i-lucide-house', onSelect: tutupSidebar },
       { label: 'Kepala Sekolah', to: '/checklist/kepsek', icon: 'i-lucide-user-round-check', badge: `${p.kepsek.done}/${p.kepsek.total}`, onSelect: tutupSidebar },
+      { label: 'SK Beban Mengajar & Jadwal', to: '/skbm', icon: 'i-lucide-calendar-range', onSelect: tutupSidebar },
       {
         label: 'Operator Sekolah',
         icon: 'i-lucide-monitor-cog',

@@ -6,7 +6,22 @@ export interface Sign {
   nama: string
   nip?: string
   meterai?: boolean
+  /** Baris pangkat/golongan di antara nama dan NIP, mis. "Penata Tk. I". */
+  pangkat?: string
+  /** Nama digarisbawahi (bawaan true). */
+  garisBawah?: boolean
+  /** Rata teks kolom tanda tangan (bawaan tengah). */
+  rata?: 'left' | 'center'
 }
+
+/** Judul kolom bertingkat: kolom `mulai` sampai `mulai + jumlah - 1` berada di bawah satu judul. */
+export interface KelompokKolom {
+  mulai: number
+  jumlah: number
+  teks: string
+}
+
+export type Orientasi = 'portrait' | 'landscape'
 
 export type Block =
   | { t: 'kop' }
@@ -14,10 +29,23 @@ export type Block =
   | { t: 'p', text: string, align?: Align, bold?: boolean, indent?: boolean, italic?: boolean }
   | { t: 'meta', rows: [string, string][], bold?: number[] }
   | { t: 'list', items: string[], style?: 'num' | 'alpha' | 'bullet' }
-  | { t: 'table', head: string[], rows: string[][], widths?: number[], tall?: boolean, align?: Align[] }
+  | {
+    t: 'table'
+    head: string[]
+    rows: string[][]
+    widths?: number[]
+    tall?: boolean
+    align?: Align[]
+    /** Judul kelompok di atas beberapa kolom (baris judul kedua). */
+    kelompok?: KelompokKolom[]
+    /** Huruf lebih kecil untuk tabel lebar (lampiran). */
+    kecil?: boolean
+  }
   | { t: 'sign', left?: Sign, right?: Sign, center?: Sign }
   | { t: 'space', n?: number }
   | { t: 'break' }
+  /** Halaman baru dengan orientasi tertentu; berlaku sampai blok `halaman` berikutnya. */
+  | { t: 'halaman', orientasi: Orientasi }
   | { t: 'photos', n: number, captions?: string[] }
 
 /** Teks dengan **tebal** sederhana */
@@ -50,6 +78,15 @@ export function lebarKolom(b: Extract<Block, { t: 'table' }>): number[] {
   const total = raw.reduce((a, n) => a + n, 0) || 1
   return raw.map(n => (n / total) * 100)
 }
+
+/** Baris berawalan nomor/huruf ("1. ", "a. ") untuk indentasi gantung di daftar Menimbang/Mengingat. */
+export function polaNomor(baris: string): { nomor: string, isi: string } | null {
+  const m = baris.match(/^(\d{1,3}\.|[a-z]\.|•)\s+(.*)$/)
+  return m ? { nomor: m[1]!, isi: m[2]! } : null
+}
+
+/** Pemisah halaman: blok `break` atau `halaman`. */
+export const pemisahHalaman = (b: Block) => b.t === 'break' || b.t === 'halaman'
 
 /** Kolom tanda tangan dengan jumlah baris kepala yang disamakan, agar nama sejajar */
 export function signColumns(b: Extract<Block, { t: 'sign' }>): (Sign | undefined)[] {

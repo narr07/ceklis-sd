@@ -1,0 +1,165 @@
+title: Administrasi SD, [beres]{.text-primary} tiap semester.
+description: Ceklis SD merangkum pekerjaan operator, kepala sekolah, dan bendahara dalam satu checklist per semester, lalu membuat dokumennya dalam format Word dengan kop dan pejabat terisi otomatis. Berjalan tanpa internet di laptop sekolah, gratis, dan sumber terbuka.
+seo:
+  title: 'Ceklis SD: Checklist & template administrasi SD'
+  description: Checklist per semester dan generator dokumen .docx untuk operator, kepala sekolah, dan bendahara SD. Gratis, offline, dan sumber terbuka.
+hero:
+  headline: Gratis untuk Windows · Sumber terbuka
+  links:
+    - label: Unduh untuk Windows
+      to: '/#unduh'
+      icon: i-lucide-download
+      size: xl
+    - label: Baca panduan
+      to: /panduan/mulai
+      icon: i-lucide-book-open
+      size: xl
+      color: neutral
+      variant: subtle
+  image:
+    src: /tangkapan/beranda.png
+    alt: Beranda Ceklis SD berisi progres checklist tiap peran dan tenggat terdekat
+sections:
+  - id: fitur
+    headline: Checklist per peran
+    title: Tahu persis apa yang harus dikerjakan semester ini
+    description: Tugas operator, kepala sekolah, dan bendahara dipisah per peran dan muncul sesuai periodenya, dari pemutakhiran Dapodik sampai laporan tahap BOSP.
+    orientation: horizontal
+    image:
+      src: /tangkapan/checklist.png
+      alt: Checklist operator sekolah per semester dengan progres dan catatan
+    features:
+      - title: Muncul sesuai periode
+        description: Item semester, awal tahun ajaran, dan awal tahun anggaran tampil otomatis menurut tahun ajaran dan semester yang dipilih.
+        icon: i-lucide-calendar-check
+      - title: Tenggat tidak terlewat
+        description: Tenggat terdekat tampil di beranda, dengan pengingat notifikasi Windows bila diaktifkan.
+        icon: i-lucide-bell-ring
+      - title: Merujuk dasar aturan
+        description: Setiap item menunjuk aplikasi dan aturan yang berlaku, dengan ringkasan Juknis BOSP, belanja sekolah, Dapodik, dan pajak.
+        icon: i-lucide-scale
+  - id: dokumen
+    headline: Template dokumen
+    title: Dokumen Word siap cetak dalam hitungan menit
+    description: Isi formulir singkat, lihat pratinjaunya, lalu unduh .docx. Kop surat, logo, nama pejabat, dan daftar GTK diambil dari profil sekolah.
+    orientation: horizontal
+    reverse: true
+    image:
+      src: /tangkapan/template.png
+      alt: Pratinjau template dokumen di samping formulir isian
+    features:
+      - title: 19 template + Paket RKAS
+        description: Undangan, daftar hadir, notulen, berita acara, SK, kuitansi, BA serah terima, daftar honor PPh 21, dan lainnya.
+        icon: i-lucide-file-text
+      - title: Tabel dan tanda tangan rapi
+        description: Lebar kolom, perataan angka, dan posisi tanda tangan sama di Word maupun LibreOffice.
+        icon: i-lucide-table-properties
+      - title: Tetap bisa disunting
+        description: Hasilnya file .docx biasa, jadi format khas kabupaten tetap bisa disesuaikan sebelum dicetak.
+        icon: i-lucide-pencil-line
+  - id: skbm
+    headline: SK beban mengajar & jadwal
+    title: Pembagian tugas dan jadwal tanpa guru bentrok
+    description: Tentukan tugas tiap guru, lalu SK beserta Lampiran I sampai IV tersusun otomatis. Jadwal 5 hari disusun sehingga guru PAI, PJOK, dan guru mapel lain tidak pernah mengajar dua kelas pada jam yang sama.
+    orientation: horizontal
+    image:
+      src: /tangkapan/jadwal.png
+      alt: Jadwal pelajaran 5 hari per kelas dengan penanda tidak ada bentrok
+    features:
+      - title: Pemetaan jam otomatis
+        description: Jam PAIBP dan PJOK diberikan ke guru mapelnya, sisanya menjadi beban guru kelas, sesuai struktur JJM sekolah.
+        icon: i-lucide-calculator
+      - title: Jadwal tanpa bentrok
+        description: Penyusun otomatis menempatkan jam guru mapel lebih dulu; perubahan manual yang bentrok langsung ditandai.
+        icon: i-lucide-calendar-range
+      - title: SK + Lampiran I–IV
+        description: Pemetaan jam, jumlah siswa per rombel, tugas bimbingan, dan pengelolaan kinerja dalam satu file Word.
+        icon: i-lucide-file-badge
+  - id: data
+    headline: Data dari Dapodik
+    title: Isi data sekolah dari SPTJM, bukan mengetik ulang
+    description: Unduh PDF SPTJM dari SP Datadik, impor ke Ceklis SD, dan profil, GTK, rombel, sarpras, serta peserta didik terisi sekaligus. Daftar 1 (laporan bulanan) langsung terhitung.
+    orientation: horizontal
+    reverse: true
+    image:
+      src: /tangkapan/daftar-1.png
+      alt: Laporan bulanan Daftar 1 dengan rekap siswa per kelas dan umur
+    features:
+      - title: Impor SPTJM Dapodik
+        description: PDF dibaca langsung di laptop dan tidak dikirim ke mana pun.
+        icon: i-lucide-file-up
+      - title: Daftar 1 bulan mana pun
+        description: Pilih bulan Januari 2020 sampai Desember 2050; usia siswa dan masa kerja dihitung sampai akhir bulan itu.
+        icon: i-lucide-table-2
+      - title: Gelar dan TMT
+        description: Lengkapi gelar dan TMT sekali di daftar GTK, lalu dipakai di semua dokumen.
+        icon: i-lucide-user-pen
+features:
+  title: Dibuat untuk laptop sekolah
+  description: Ceklis SD berjalan tanpa internet dan menyimpan data di laptop Anda sendiri.
+  items:
+    - title: Bekerja offline
+      description: Semua fitur jalan tanpa internet. Koneksi hanya dibutuhkan untuk membuka SP Datadik atau sinkronisasi opsional.
+      icon: i-lucide-wifi-off
+    - title: Backup harian otomatis
+      description: Database disimpan aman di laptop, dibackup otomatis setiap hari, dan bisa dipulihkan kapan saja.
+      icon: i-lucide-archive-restore
+    - title: Data milik sekolah
+      description: Tidak ada akun dan tidak ada server pihak ketiga. Data hanya keluar bila Anda mengekspor atau menyalakan sinkronisasi sendiri.
+      icon: i-lucide-shield-check
+    - title: Pindah laptop dengan mudah
+      description: Ekspor seluruh database ke satu file .json, lalu impor di laptop lain.
+      icon: i-lucide-hard-drive-download
+    - title: Gratis dan sumber terbuka
+      description: Berlisensi MIT. Kode sumbernya bisa diperiksa siapa saja di GitHub.
+      icon: i-simple-icons-github
+    - title: Bahasa yang akrab
+      description: Istilah mengikuti yang biasa dipakai operator dan bendahara, dari Dapodik, ARKAS, sampai Coretax.
+      icon: i-lucide-message-square-text
+langkah:
+  title: Mulai dalam tiga langkah
+  description: Dari unduh sampai dokumen pertama, biasanya tidak sampai 15 menit.
+  items:
+    - title: Unduh dan pasang
+      description: Unduh installer untuk Windows di bawah, lalu jalankan. Bila SmartScreen muncul, pilih "Info lainnya" lalu "Tetap jalankan".
+      icon: i-lucide-download
+    - title: Impor SPTJM Dapodik
+      description: Saat pertama dibuka, Ceklis SD memandu Anda mengunduh PDF SPTJM dari SP Datadik dan mengimpornya.
+      icon: i-lucide-file-up
+    - title: Lengkapi dan kerjakan
+      description: Tambahkan gelar dan TMT guru, lalu kerjakan checklist dan buat dokumen yang dibutuhkan.
+      icon: i-lucide-list-checks
+unduh:
+  title: Unduh Ceklis SD
+  description: Selalu versi terbaru, langsung dari rilis resmi di GitHub.
+faq:
+  title: Pertanyaan yang sering diajukan
+  description: Belum menemukan jawabannya? Laporkan lewat GitHub Issues.
+  items:
+    - label: Apakah Ceklis SD gratis?
+      content: Ya, gratis sepenuhnya dan berlisensi MIT. Tidak ada versi berbayar, iklan, atau akun yang harus dibuat.
+    - label: Apakah butuh internet?
+      content: Tidak. Semua fitur berjalan offline. Internet hanya dibutuhkan untuk membuka SP Datadik saat mengunduh SPTJM, atau bila Anda menyalakan sinkronisasi server sendiri.
+    - label: Di mana data sekolah disimpan?
+      content: Di laptop Anda, pada folder data aplikasi Windows, lengkap dengan backup harian otomatis. Ceklis SD tidak mengirim data ke server mana pun kecuali Anda mengekspor file atau menyalakan sinkronisasi.
+    - label: Kenapa muncul peringatan SmartScreen saat memasang?
+      content: Installer belum ditandatangani dengan sertifikat code signing berbayar, sehingga Windows menampilkan peringatan. Installer dibangun otomatis oleh GitHub Actions dari kode sumber publik. Pilih "Info lainnya", lalu "Tetap jalankan".
+    - label: Apakah Ceklis SD menggantikan Dapodik atau ARKAS?
+      content: Tidak. Ceklis SD membantu mengingatkan pekerjaan dan menyiapkan dokumen pendukung. Pendataan resmi tetap di Dapodik, dan RKAS tetap di ARKAS.
+    - label: Apakah ringkasan aturannya selalu terbaru?
+      content: Ringkasan aturan diperiksa berkala dan setiap ringkasan mencantumkan tanggal pemeriksaannya. Ringkasan ini alat bantu, bukan rujukan hukum; cocokkan dengan teks resmi dan arahan dinas sebelum mengambil keputusan.
+    - label: Apakah tersedia untuk Mac, Linux, atau HP?
+      content: Saat ini installer tersedia untuk Windows 10 dan 11 (64-bit), sistem operasi yang paling banyak dipakai di laptop sekolah.
+cta:
+  title: Bereskan administrasi semester ini.
+  description: Unduh Ceklis SD, impor SPTJM, dan dokumen pertama Anda siap dalam hitungan menit.
+  links:
+    - label: Unduh untuk Windows
+      to: '/#unduh'
+      icon: i-lucide-download
+    - label: Baca panduan
+      to: /panduan/mulai
+      color: neutral
+      variant: subtle
+      trailing: true
+      icon: i-lucide-arrow-right

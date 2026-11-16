@@ -19,7 +19,7 @@ const fileInput = ref<HTMLInputElement | null>(null)
 
 const grup: { judul: string, fields: [keyof Profil, string][] }[] = [
   { judul: 'Identitas sekolah', fields: [['npsn', 'NPSN'], ['alamat', 'Alamat/blok'], ['desa', 'Desa'], ['kecamatan', 'Kecamatan'], ['kabupaten', 'Kabupaten'], ['kodepos', 'Kode pos'], ['email', 'E-mail'], ['website', 'Website']] },
-  { judul: 'Pejabat & penandatangan', fields: [['kepsek', 'Kepala sekolah'], ['nipKepsek', 'NIP kepala sekolah'], ['bendahara', 'Bendahara BOSP'], ['nipBendahara', 'NIP bendahara'], ['operator', 'Operator Dapodik'], ['nipOperator', 'NIP/NUPTK operator'], ['komite', 'Ketua komite sekolah']] },
+  { judul: 'Pejabat & penandatangan', fields: [['kepsek', 'Kepala sekolah'], ['nipKepsek', 'NIP kepala sekolah'], ['bendahara', 'Bendahara BOSP'], ['nipBendahara', 'NIP bendahara'], ['operator', 'Operator Dapodik'], ['nipOperator', 'NIP/NUPTK operator'], ['komite', 'Ketua komite sekolah'], ['pengawas', 'Pengawas pembina'], ['nipPengawas', 'NIP pengawas'], ['pangkatPengawas', 'Pangkat/golongan pengawas']] },
   { judul: 'Penomoran', fields: [['kota', 'Tempat penandatanganan'], ['kodeSurat', 'Kode sekolah pada nomor surat']] },
 ]
 
@@ -144,14 +144,17 @@ function jalankanReset() {
             />
             <div v-for="(g, i) in profil.gtk" :key="i" class="space-y-2 rounded-lg border border-default p-3">
               <div class="grid grid-cols-2 items-end gap-2 md:grid-cols-12">
-                <UFormField label="Nama & gelar" class="col-span-2 md:col-span-6">
+                <UFormField label="Nama & gelar" class="col-span-2 md:col-span-5">
                   <UInput v-model="g.nama" placeholder="mis. Drs. Ahmad, S.Pd." class="w-full" :color="namaBergelar(g.nama) ? undefined : 'warning'" :highlight="!namaBergelar(g.nama)" />
                 </UFormField>
-                <UFormField label="L/P" class="md:col-span-2">
+                <UFormField label="L/P" class="md:col-span-1">
                   <USelect v-model="g.jk" :items="['L', 'P']" class="w-full" />
                 </UFormField>
-                <UFormField label="Jabatan" class="md:col-span-3">
+                <UFormField label="Jabatan" class="md:col-span-2">
                   <UInput v-model="g.jabatan" class="w-full" />
+                </UFormField>
+                <UFormField label="Pangkat/golongan" class="md:col-span-2">
+                  <UInput v-model="g.pangkat" placeholder="mis. Penata Tk. I, III/d" class="w-full" />
                 </UFormField>
                 <div class="flex justify-end md:col-span-1">
                   <UButton color="error" variant="ghost" icon="i-lucide-trash-2" :aria-label="`Hapus ${g.nama || 'GTK'}`" @click="profil.gtk.splice(i, 1)" />

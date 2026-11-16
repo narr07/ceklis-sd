@@ -40,7 +40,7 @@
 
 :root {
   --ui-primary: var(--ui-color-primary-700);
-  --ui-radius: 0.5rem;
+  --ui-radius: 0.25rem;
   --ui-bg: #fbfcfb;
 }
 .dark {
@@ -68,6 +68,10 @@
 }
 .paper table.doc-table th { background: var(--color-papan-50); font-weight: 700; text-align: center; font-size: 10.5pt; }
 .paper table.doc-table tr.tall td { height: 2.6em; }
+/* Tabel lampiran yang lebar (mis. SKBM): huruf & ruang sel lebih kecil */
+.paper table.doc-table.kecil td,
+.paper table.doc-table.kecil th { padding: 1px 3px; line-height: 1.2; }
+.paper table.doc-table.kecil th { font-size: 7.5pt; }
 
 @media print {
   header, nav, aside, .no-print { display: none !important; }

@@ -86,7 +86,7 @@ export function validasiIsiDatabase(data: unknown): data is Record<string, unkno
   if (!data || typeof data !== 'object' || Array.isArray(data)) return false
   const d = data as Record<string, unknown>
   if (!d.profil || typeof d.profil !== 'object' || Array.isArray(d.profil)) return false
-  for (const k of ['progress', 'isian', 'periode', 'daftar1']) {
+  for (const k of ['progress', 'isian', 'periode', 'daftar1', 'skbm']) {
     if (k in d && (typeof d[k] !== 'object' || d[k] === null || Array.isArray(d[k]))) return false
   }
   return true
