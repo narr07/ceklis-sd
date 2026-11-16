@@ -43,7 +43,7 @@ jobs:
             echo "${isi}"
             echo ''
             echo '---'
-            echo 'Unduh **Installer .exe** (disarankan) atau paket **.msi** di bawah. Installer dibangun otomatis oleh GitHub Actions dari kode sumber repo ini dan belum ditandatangani, sehingga Windows SmartScreen akan menampilkan peringatan saat pemasangan pertama: pilih "Info lainnya", lalu "Tetap jalankan".'
+            echo 'Unduh **Installer .exe** (disarankan) atau paket **.msi** di bawah. Installer dibangun otomatis oleh GitHub Actions dari kode sumber repo ini dan belum ditandatangani, sehingga Windows SmartScreen akan menampilkan peringatan saat pemasangan pertama: pilih "Info lainnya", lalu "Tetap jalankan". Bila antivirus menandainya, cocokkan checksum SHA-256 di samping setiap file di bawah (atau di https://ceklis.permadi.dev/rilis) dengan hasil `Get-FileHash`; panduannya di https://ceklis.permadi.dev/panduan/instalasi.'
             echo 'CATATAN_AKHIR'
           } >> "$GITHUB_OUTPUT"
 

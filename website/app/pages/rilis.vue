@@ -7,6 +7,7 @@ useSeoMeta({
 })
 
 const installerDari = (r: RilisGithub) => r.assets.filter(a => /\.(exe|msi)$/i.test(a.name))
+const denganChecksum = (r: RilisGithub) => installerDari(r).filter(a => sha256Aset(a))
 </script>
 
 <template>
@@ -75,6 +76,41 @@ const installerDari = (r: RilisGithub) => r.assets.filter(a => /\.(exe|msi)$/i.t
                 :label="`${a.name} (${ukuranMb(a.size)})`"
               />
             </div>
+            <UCollapsible
+              v-if="denganChecksum(r).length"
+              class="mt-3"
+            >
+              <UButton
+                size="xs"
+                color="neutral"
+                variant="link"
+                icon="i-lucide-fingerprint"
+                trailing-icon="i-lucide-chevron-down"
+                label="Checksum SHA-256"
+                class="px-0"
+              />
+              <template #content>
+                <dl class="mt-2 space-y-2 text-xs">
+                  <div
+                    v-for="a in denganChecksum(r)"
+                    :key="a.name"
+                  >
+                    <dt class="text-muted">
+                      {{ a.name }}
+                    </dt>
+                    <dd class="break-all font-mono select-all">
+                      {{ sha256Aset(a) }}
+                    </dd>
+                  </div>
+                </dl>
+                <p class="mt-2 text-xs text-muted">
+                  Cocokkan dengan hasil <code>Get-FileHash</code>. <ULink
+                    to="/panduan/instalasi#memastikan-file-asli"
+                    class="underline"
+                  >Caranya</ULink>
+                </p>
+              </template>
+            </UCollapsible>
           </template>
         </UChangelogVersion>
       </UChangelogVersions>

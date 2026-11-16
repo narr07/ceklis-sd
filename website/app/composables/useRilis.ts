@@ -3,6 +3,8 @@ export interface AsetRilis {
   size: number
   browser_download_url: string
   download_count: number
+  /** Sidik jari dari GitHub, mis. "sha256:2a39…". Tidak ada pada aset lama. */
+  digest?: string | null
 }
 
 export interface RilisGithub {
@@ -24,6 +26,10 @@ export function installerWindows(r?: RilisGithub | null) {
     msi: aset.find(a => /\.msi$/i.test(a.name))
   }
 }
+
+/** Nilai SHA-256 aset (huruf besar, seperti keluaran Get-FileHash), atau '' bila tidak tersedia. */
+export const sha256Aset = (a: AsetRilis) =>
+  a.digest?.startsWith('sha256:') ? a.digest.slice(7).toUpperCase() : ''
 
 export const ukuranMb = (b: number) => `${(b / 1024 / 1024).toFixed(1).replace('.', ',')} MB`
 

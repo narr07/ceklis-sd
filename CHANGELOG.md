@@ -1,10 +1,11 @@
 # Changelog
 
-## Belum dirilis
+## 1.4.0
 - **Simpan PDF** di template dokumen, SK Beban Mengajar & Jadwal, dan Daftar 1. Di aplikasi desktop, PDF dibuat langsung oleh WebView2 (`Page.printToPDF`) sehingga sama dengan pratinjau, termasuk halaman lanskap Lampiran I–II dan margin seperti file .docx; lokasi simpan dipilih lewat dialog Windows. Di peramban, tombol membuka dialog cetak ("Simpan sebagai PDF").
 - **Google Drive sekolah** (Profil → Database): hubungkan akun Google sekolah lewat browser (OAuth loopback + PKCE, izin hanya `drive.file`). Token tersimpan di Windows Credential Manager. Tombol **Simpan ke Drive** di template dokumen, SK Beban Mengajar & Jadwal, dan Daftar 1 menyimpan PDF/Word/Excel ke `Ceklis SD/Dokumen/<periode>`; berkas bernama sama diperbarui, tidak digandakan.
 - **Sinkron database lewat Google Drive**: database dienkripsi di komputer (Argon2id + XChaCha20-Poly1305) dengan kata sandi sekolah sebelum diunggah. Ambil dari Drive membuat backup lokal dulu; perubahan dari komputer lain terdeteksi sebagai konflik dengan pilihan ambil/timpa. Di komputer baru, NPSN bisa diketik untuk mencari salinan database.
 - **Perbarui SPTJM** untuk tahun ajaran baru: bila sudah ada SPTJM, impor PDF baru menampilkan ringkasan perubahan dulu (siswa baru per kelas, lulus kelas 6, keluar/mutasi, naik kelas, pindah rombel, GTK masuk/keluar, peringatan bila SPTJM lebih lama atau milik sekolah lain). Isian BB/TB dan agama siswa yang keluar bisa dibersihkan dari Daftar 1; gelar dan TMT GTK tetap dipertahankan; backup dibuat sebelum diterapkan.
+- **Situs**: panduan Google Drive, Perbarui SPTJM, dan penjelasan peringatan Windows/antivirus saat memasang; halaman Catatan Rilis menampilkan checksum SHA-256 setiap installer untuk memastikan file asli.
 
 ## 1.3.0
 - **SK Beban Mengajar (SKBM) & Jadwal Pelajaran** (halaman `/skbm`): tugas tiap guru (kepala sekolah, guru kelas, guru mapel) ditebak dari Profil dan bisa diubah; struktur JJM per kelas; jumlah siswa per rombel dari SPTJM atau manual, termasuk rekap peserta pramuka; tugas bimbingan. Menghasilkan SK + Lampiran I (pemetaan jam, mendatar), II (siswa per rombel, mendatar), III (bimbingan), IV (pengelolaan kinerja) dalam satu file .docx, dengan rujukan diktum ke lampiran yang benar.

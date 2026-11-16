@@ -2,7 +2,7 @@
   "name": "ceklis-sd",
   "private": true,
   "type": "module",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Checklist & template administrasi Sekolah Dasar (Web & Desktop Offline).",
   "license": "MIT",
   "scripts": {
