@@ -31,7 +31,7 @@ export default defineNuxtConfig({
 
   nitro: {
     prerender: {
-      routes: ['/', '/rilis', '/panduan/mulai'],
+      routes: ['/', '/rilis', '/privasi', '/ketentuan', '/panduan/mulai'],
       crawlLinks: true
     }
   },

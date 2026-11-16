@@ -18,6 +18,8 @@ const columns = [{
   children: [
     { label: 'Kode sumber', to: URL_REPO, target: '_blank' },
     { label: 'Laporkan masalah', to: URL_ISSUE, target: '_blank' },
+    { label: 'Kebijakan privasi', to: '/privasi' },
+    { label: 'Ketentuan layanan', to: '/ketentuan' },
     { label: 'Lisensi MIT', to: `${URL_REPO}/blob/main/LICENSE`, target: '_blank' }
   ]
 }]
