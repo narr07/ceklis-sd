@@ -106,8 +106,8 @@ pub fn load_db_from(dir: &Path) -> Result<Option<Value>, String> {
     }
     let raw = fs::read_to_string(&path)
         .map_err(|e| format!("Gagal membaca database lokal {}: {e}", path.display()))?;
-    let val: Value = serde_json::from_str(&raw)
-        .map_err(|e| format!("Format JSON database lokal rusak: {e}"))?;
+    let val: Value =
+        serde_json::from_str(&raw).map_err(|e| format!("Format JSON database lokal rusak: {e}"))?;
     Ok(Some(val))
 }
 
@@ -136,8 +136,7 @@ pub fn status_in(dir: &Path) -> Result<StorageStatus, String> {
         });
     }
 
-    let meta = fs::metadata(&path)
-        .map_err(|e| format!("Gagal membaca metadata database: {e}"))?;
+    let meta = fs::metadata(&path).map_err(|e| format!("Gagal membaca metadata database: {e}"))?;
     let data = load_db_from(dir)?;
     let checksum = match data.as_ref() {
         Some(v) => Some(canonical_checksum(v)?),
@@ -172,7 +171,10 @@ fn unique_backup_path(bdir: &Path, tag: Option<&str>) -> PathBuf {
             return candidate;
         }
     }
-    bdir.join(format!("backup-{stamp}{suffix}-{}.json", Utc::now().timestamp_millis()))
+    bdir.join(format!(
+        "backup-{stamp}{suffix}-{}.json",
+        Utc::now().timestamp_millis()
+    ))
 }
 
 fn prune_old_backups(bdir: &Path) -> io::Result<()> {
@@ -192,8 +194,8 @@ fn prune_old_backups(bdir: &Path) -> io::Result<()> {
 }
 
 pub fn create_backup_in(dir: &Path, tag: Option<&str>) -> Result<BackupEntry, String> {
-    let data = load_db_from(dir)?
-        .ok_or_else(|| "Database lokal belum ada untuk dibackup.".to_string())?;
+    let data =
+        load_db_from(dir)?.ok_or_else(|| "Database lokal belum ada untuk dibackup.".to_string())?;
     let bdir = backups_dir(dir);
     fs::create_dir_all(&bdir)
         .map_err(|e| format!("Gagal membuat folder backup {}: {e}", bdir.display()))?;
@@ -204,8 +206,7 @@ pub fn create_backup_in(dir: &Path, tag: Option<&str>) -> Result<BackupEntry, St
     write_atomic(&target, &bytes)?;
     let _ = prune_old_backups(&bdir);
 
-    let meta = fs::metadata(&target)
-        .map_err(|e| format!("Gagal membaca metadata backup: {e}"))?;
+    let meta = fs::metadata(&target).map_err(|e| format!("Gagal membaca metadata backup: {e}"))?;
     let filename = target
         .file_name()
         .map(|n| n.to_string_lossy().to_string())
@@ -225,8 +226,7 @@ pub fn list_backups_in(dir: &Path) -> Result<Vec<BackupEntry>, String> {
         return Ok(Vec::new());
     }
     let mut out = Vec::new();
-    let rd = fs::read_dir(&bdir)
-        .map_err(|e| format!("Gagal membaca folder backup: {e}"))?;
+    let rd = fs::read_dir(&bdir).map_err(|e| format!("Gagal membaca folder backup: {e}"))?;
     for item in rd {
         let entry = item.map_err(|e| format!("Gagal membaca entri backup: {e}"))?;
         let name = entry.file_name().to_string_lossy().to_string();
@@ -313,13 +313,13 @@ pub fn delete_backup_in(dir: &Path, filename: &str) -> Result<(), String> {
     if !target.exists() {
         return Err(format!("File backup {filename} tidak ditemukan."));
     }
-    fs::remove_file(&target)
-        .map_err(|e| format!("Gagal menghapus backup {filename}: {e}"))
+    fs::remove_file(&target).map_err(|e| format!("Gagal menghapus backup {filename}: {e}"))
 }
 
 pub fn build_sync_envelope(dir: &Path, npsn: &str, sekolah: &str) -> Result<SyncEnvelope, String> {
-    let data = load_db_from(dir)?
-        .ok_or_else(|| "Database lokal belum tersimpan; simpan profil terlebih dahulu.".to_string())?;
+    let data = load_db_from(dir)?.ok_or_else(|| {
+        "Database lokal belum tersimpan; simpan profil terlebih dahulu.".to_string()
+    })?;
     let checksum = canonical_checksum(&data)?;
     Ok(SyncEnvelope {
         schema_version: 1,
@@ -394,7 +394,10 @@ mod tests {
         let tmp = tempfile::tempdir().unwrap();
         save_db_to(tmp.path(), &json!({ "versi": 1 })).unwrap();
         save_db_to(tmp.path(), &json!({ "versi": 2 })).unwrap();
-        assert_eq!(load_db_from(tmp.path()).unwrap().unwrap(), json!({ "versi": 2 }));
+        assert_eq!(
+            load_db_from(tmp.path()).unwrap().unwrap(),
+            json!({ "versi": 2 })
+        );
         assert!(!db_file(tmp.path()).with_extension("json.tmp").exists());
     }
 
@@ -402,16 +405,28 @@ mod tests {
     fn backup_harian_hanya_dibuat_bila_sudah_waktunya() {
         let tmp = tempfile::tempdir().unwrap();
         // Database belum ada: tidak ada yang dibackup.
-        assert!(auto_backup_if_due_in(tmp.path(), Duration::from_secs(3600)).unwrap().is_none());
+        assert!(
+            auto_backup_if_due_in(tmp.path(), Duration::from_secs(3600))
+                .unwrap()
+                .is_none()
+        );
 
         save_db_to(tmp.path(), &json!({ "versi": 1 })).unwrap();
         let pertama = auto_backup_if_due_in(tmp.path(), Duration::from_secs(3600)).unwrap();
         assert!(pertama.unwrap().filename.contains("harian"));
 
         // Backup barusan dibuat, jadi belum waktunya lagi.
-        assert!(auto_backup_if_due_in(tmp.path(), Duration::from_secs(3600)).unwrap().is_none());
+        assert!(
+            auto_backup_if_due_in(tmp.path(), Duration::from_secs(3600))
+                .unwrap()
+                .is_none()
+        );
         // Dengan batas umur nol, backup baru selalu dibuat.
-        assert!(auto_backup_if_due_in(tmp.path(), Duration::ZERO).unwrap().is_some());
+        assert!(
+            auto_backup_if_due_in(tmp.path(), Duration::ZERO)
+                .unwrap()
+                .is_some()
+        );
     }
 
     #[test]

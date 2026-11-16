@@ -36,6 +36,55 @@ export class KonflikSinkronError extends Error {
   }
 }
 
+/** Kata sandi sinkron Drive belum tersimpan di komputer ini; minta pengguna mengetiknya. */
+export class PerluSandiError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'PerluSandiError'
+  }
+}
+
+/** Kata sandi salah (atau berkas di Drive rusak), sehingga database tidak bisa dibuka. */
+export class SandiSalahError extends Error {
+  constructor(message: string) {
+    super(message)
+    this.name = 'SandiSalahError'
+  }
+}
+
+export interface StatusGoogle {
+  /** Build ini punya Client ID Google (installer resmi). */
+  tersedia: boolean
+  terhubung: boolean
+  email: string
+  nama: string
+  /** Kata sandi sinkron database tersimpan di Credential Manager komputer ini. */
+  adaSandi: boolean
+}
+
+export interface InfoDatabaseDrive {
+  /** Versi berkas di Drive; dipakai mendeteksi perubahan dari perangkat lain. */
+  versi: string
+  diubah: string
+}
+
+export interface HasilUnggahDrive {
+  nama: string
+  tautan: string
+  diperbarui: boolean
+}
+
+/** Ubah galat string dari Rust yang berpenanda menjadi kelas galat yang bisa dikenali UI. */
+function galatDrive(e: unknown): Error {
+  const pesan = e instanceof Error ? e.message : String(e)
+  if (pesan.startsWith('KONFLIK: ')) {
+    return new KonflikSinkronError(pesan.slice(9).trim(), 'Database di Google Drive sudah diubah dari perangkat lain sejak sinkron terakhir.')
+  }
+  if (pesan.startsWith('PERLU_SANDI: ')) return new PerluSandiError(pesan.slice(13))
+  if (pesan.startsWith('SANDI_SALAH: ')) return new SandiSalahError(pesan.slice(13))
+  return new Error(pesan)
+}
+
 export type AppTarget = 'desktop' | 'static' | 'web'
 
 /**
@@ -66,6 +115,63 @@ export function useDesktopBackend() {
   const applySyncEnvelope = (envelope: SyncEnvelope) =>
     invoke<Record<string, unknown>>('apply_sync_envelope', { envelope })
   const openDataFolder = async () => { await invoke('open_data_folder') }
+
+  /** Simpan halaman yang sedang tampil sebagai PDF (dialog simpan dari Windows). */
+  const simpanPdf = (namaBerkas: string) => invoke<string | null>('simpan_pdf', { namaBerkas })
+
+  /* ── Google Drive milik sekolah (khusus desktop) ── */
+  const googleStatus = () => invoke<StatusGoogle>('google_status')
+  /** Buka login Google di browser; selesai setelah pengguna memberi izin (maks. 5 menit). */
+  const googleMasuk = () => invoke<StatusGoogle>('google_masuk')
+  const googleBatalMasuk = async () => { await invoke('google_batal_masuk') }
+  const googlePutus = () => invoke<StatusGoogle>('google_putus')
+  const driveAturSandi = async (sandi: string) => { await invoke('drive_atur_sandi', { sandi }) }
+  const driveLupakanSandi = async () => { await invoke('drive_lupakan_sandi') }
+  const driveInfoDatabase = (npsn: string) => invoke<InfoDatabaseDrive | null>('drive_info_database', { npsn })
+  const driveBukaFolder = async () => { await invoke('drive_buka_folder') }
+
+  /** Simpan database ke disk lalu kirim salinan terenkripsi ke Drive. */
+  async function driveKirimDatabase(
+    snapshot: Record<string, unknown>,
+    meta: { npsn: string, sekolah: string, versiDasar: string, paksa?: boolean },
+  ): Promise<InfoDatabaseDrive> {
+    await saveDatabase(snapshot)
+    try {
+      return await invoke<InfoDatabaseDrive>('drive_kirim_database', {
+        npsn: meta.npsn,
+        sekolah: meta.sekolah,
+        versiDasar: meta.versiDasar,
+        paksa: Boolean(meta.paksa),
+      })
+    }
+    catch (e) { throw galatDrive(e) }
+  }
+
+  /** Ambil database dari Drive; Rust membuat backup "sebelum-sinkron" sebelum mengganti data lokal. */
+  async function driveAmbilDatabase(npsn: string, sandi?: string) {
+    try {
+      return await invoke<{ data: Record<string, unknown>, versi: string, diubah: string }>(
+        'drive_ambil_database',
+        { npsn, sandi: sandi || null },
+      )
+    }
+    catch (e) { throw galatDrive(e) }
+  }
+
+  /** Unggah berkas buatan frontend (.docx/.xlsx) ke `Ceklis SD/Dokumen/<folder>`. */
+  async function driveSimpanBerkas(blob: Blob, nama: string, ekstensi: 'docx' | 'xlsx', folder: string) {
+    return invoke<HasilUnggahDrive>('drive_simpan_berkas', new Uint8Array(await blob.arrayBuffer()), {
+      headers: {
+        'x-nama': encodeURIComponent(nama),
+        'x-ekstensi': ekstensi,
+        'x-folder': encodeURIComponent(folder),
+      },
+    })
+  }
+
+  /** Buat PDF dari dokumen yang sedang disiapkan untuk dicetak, lalu unggah ke Drive. */
+  const driveSimpanPdf = (namaBerkas: string, folder: string) =>
+    invoke<HasilUnggahDrive>('drive_simpan_pdf', { namaBerkas, folder })
 
   /** Buka SP Datadik (tempat mengunduh PDF SPTJM) di browser bawaan. */
   async function bukaSpDatadik() {
@@ -226,6 +332,19 @@ export function useDesktopBackend() {
     applySyncEnvelope,
     openDataFolder,
     bukaSpDatadik,
+    simpanPdf,
+    googleStatus,
+    googleMasuk,
+    googleBatalMasuk,
+    googlePutus,
+    driveAturSandi,
+    driveLupakanSandi,
+    driveInfoDatabase,
+    driveKirimDatabase,
+    driveAmbilDatabase,
+    driveSimpanBerkas,
+    driveSimpanPdf,
+    driveBukaFolder,
     kirimKeServer,
     ambilDariServer,
   }

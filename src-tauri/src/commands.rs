@@ -9,7 +9,7 @@ use serde_json::Value;
 use tauri_plugin_dialog::DialogExt;
 use tauri_plugin_opener::OpenerExt;
 
-use crate::safety::check_user_json_path;
+use crate::safety::{check_user_file_path, check_user_json_path};
 use crate::storage::{
     BackupEntry, StorageStatus, SyncEnvelope, auto_backup_if_due_in, build_sync_envelope,
     canonical_checksum, create_backup_in, db_file, default_data_dir, delete_backup_in,
@@ -169,8 +169,8 @@ pub async fn import_database_file(app: tauri::AppHandle) -> Result<Option<Value>
     tauri::async_runtime::spawn_blocking(move || {
         let raw = fs::read_to_string(&checked)
             .map_err(|e| format!("Gagal membaca file {}: {e}", checked.display()))?;
-        let parsed: Value = serde_json::from_str(&raw)
-            .map_err(|e| format!("File bukan JSON valid: {e}"))?;
+        let parsed: Value =
+            serde_json::from_str(&raw).map_err(|e| format!("File bukan JSON valid: {e}"))?;
 
         if parsed.get("schemaVersion").is_some() && parsed.get("data").is_some() {
             let envelope: SyncEnvelope = serde_json::from_value(parsed)
@@ -205,6 +205,57 @@ pub async fn apply_sync_envelope(envelope: SyncEnvelope) -> Result<Value, String
         .map_err(|e| format!("Gagal menerapkan data dari server: {e}"))?
 }
 
+/// Simpan halaman dokumen yang sedang tampil sebagai PDF. Pengguna memilih lokasi lewat dialog;
+/// UI hanya mengirim nama file usulan, bukan path.
+#[tauri::command]
+pub async fn simpan_pdf(
+    app: tauri::AppHandle,
+    window: tauri::WebviewWindow,
+    nama_berkas: String,
+) -> Result<Option<String>, String> {
+    let usulan: String = nama_berkas
+        .chars()
+        .map(|c| {
+            if c.is_alphanumeric() || " -_.()".contains(c) {
+                c
+            } else {
+                '_'
+            }
+        })
+        .collect();
+    let usulan = if usulan.to_ascii_lowercase().ends_with(".pdf") {
+        usulan
+    } else {
+        format!("{usulan}.pdf")
+    };
+
+    let dipilih = tauri::async_runtime::spawn_blocking(move || {
+        app.dialog()
+            .file()
+            .set_file_name(&usulan)
+            .add_filter("Dokumen PDF", &["pdf"])
+            .blocking_save_file()
+    })
+    .await
+    .map_err(|e| format!("Gagal membuka dialog simpan: {e}"))?;
+
+    let Some(berkas) = dipilih else {
+        return Ok(None);
+    };
+    let path: PathBuf = berkas
+        .into_path()
+        .map_err(|e| format!("Path PDF tidak valid: {e}"))?;
+    let tujuan = check_user_file_path(&path, "pdf")?;
+
+    tauri::async_runtime::spawn_blocking(move || {
+        let bytes = crate::pdf::pdf_halaman(&window)?;
+        write_atomic(&tujuan, &bytes)?;
+        Ok(Some(tujuan.to_string_lossy().to_string()))
+    })
+    .await
+    .map_err(|e| format!("Gagal membuat PDF: {e}"))?
+}
+
 /// Alamat SP Datadik untuk mengunduh SPTJM. Ditetapkan di backend: UI hanya meminta
 /// "buka SP Datadik", tidak bisa menyuruh backend membuka URL sembarang.
 const URL_SP_DATADIK: &str = "https://sp.datadik.kemendikdasmen.go.id";
@@ -228,4 +279,115 @@ pub async fn open_data_folder(app: tauri::AppHandle) -> Result<(), String> {
     })
     .await
     .map_err(|e| format!("Gagal menjalankan pembuka folder: {e}"))?
+}
+
+/* ── Google Drive milik sekolah (lihat gdrive.rs) ── */
+
+#[tauri::command]
+pub async fn google_status() -> Result<crate::gdrive::StatusGoogle, String> {
+    tauri::async_runtime::spawn_blocking(crate::gdrive::status)
+        .await
+        .map_err(|e| format!("Gagal membaca status Google Drive: {e}"))?
+}
+
+#[tauri::command]
+pub async fn google_masuk(app: tauri::AppHandle) -> Result<crate::gdrive::StatusGoogle, String> {
+    crate::gdrive::masuk(&app).await
+}
+
+#[tauri::command]
+pub async fn google_batal_masuk() -> Result<(), String> {
+    crate::gdrive::batal_masuk();
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn google_putus() -> Result<crate::gdrive::StatusGoogle, String> {
+    crate::gdrive::putus().await
+}
+
+#[tauri::command]
+pub async fn drive_atur_sandi(sandi: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || crate::gdrive::atur_sandi(&sandi))
+        .await
+        .map_err(|e| format!("Gagal menyimpan kata sandi: {e}"))?
+}
+
+#[tauri::command]
+pub async fn drive_lupakan_sandi() -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(crate::gdrive::lupakan_sandi)
+        .await
+        .map_err(|e| format!("Gagal menghapus kata sandi: {e}"))?
+}
+
+#[tauri::command]
+pub async fn drive_info_database(
+    npsn: String,
+) -> Result<Option<crate::gdrive::InfoDatabase>, String> {
+    crate::gdrive::info_database(&npsn).await
+}
+
+#[tauri::command]
+pub async fn drive_kirim_database(
+    npsn: String,
+    sekolah: String,
+    versi_dasar: String,
+    paksa: bool,
+) -> Result<crate::gdrive::InfoDatabase, String> {
+    crate::gdrive::kirim_database(&npsn, &sekolah, &versi_dasar, paksa).await
+}
+
+#[tauri::command]
+pub async fn drive_ambil_database(
+    npsn: String,
+    sandi: Option<String>,
+) -> Result<crate::gdrive::HasilAmbil, String> {
+    crate::gdrive::ambil_database(&npsn, sandi).await
+}
+
+/// Unggah berkas yang dibuat di frontend (mis. .docx/.xlsx). Isi dikirim sebagai body mentah;
+/// nama, ekstensi, dan folder lewat header (di-encode URI) lalu dibersihkan di backend.
+#[tauri::command]
+pub async fn drive_simpan_berkas(
+    request: tauri::ipc::Request<'_>,
+) -> Result<crate::gdrive::HasilUnggah, String> {
+    let tauri::ipc::InvokeBody::Raw(isi) = request.body() else {
+        return Err("Isi berkas harus dikirim sebagai data biner.".to_string());
+    };
+    let header = |k: &str| -> String {
+        let mentah = request
+            .headers()
+            .get(k)
+            .and_then(|v| v.to_str().ok())
+            .unwrap_or("");
+        reqwest::Url::parse(&format!("http://x/?v={mentah}"))
+            .ok()
+            .and_then(|u| u.query_pairs().next().map(|(_, v)| v.into_owned()))
+            .unwrap_or_default()
+    };
+    let (nama, ekstensi, folder) = (header("x-nama"), header("x-ekstensi"), header("x-folder"));
+    let isi = isi.clone();
+    crate::gdrive::simpan_dokumen(&nama, &ekstensi, &folder, isi).await
+}
+
+/// Buat PDF dari dokumen yang sedang disiapkan untuk dicetak, lalu simpan ke Google Drive.
+#[tauri::command]
+pub async fn drive_simpan_pdf(
+    window: tauri::WebviewWindow,
+    nama_berkas: String,
+    folder: String,
+) -> Result<crate::gdrive::HasilUnggah, String> {
+    let isi = tauri::async_runtime::spawn_blocking(move || crate::pdf::pdf_halaman(&window))
+        .await
+        .map_err(|e| format!("Gagal membuat PDF: {e}"))??;
+    crate::gdrive::simpan_dokumen(&nama_berkas, "pdf", &folder, isi).await
+}
+
+/// Buka folder "Ceklis SD" di Google Drive (URL dibangun backend dari ID folder).
+#[tauri::command]
+pub async fn drive_buka_folder(app: tauri::AppHandle) -> Result<(), String> {
+    let url = crate::gdrive::url_folder_utama().await?;
+    app.opener()
+        .open_url(url, None::<&str>)
+        .map_err(|e| format!("Gagal membuka Google Drive di browser: {e}"))
 }

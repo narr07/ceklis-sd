@@ -50,6 +50,9 @@ jobs:
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Client OAuth Google tipe Desktop untuk fitur Google Drive (dibaca build.rs).
+          CEKLIS_GOOGLE_CLIENT_ID: ${{ secrets.CEKLIS_GOOGLE_CLIENT_ID }}
+          CEKLIS_GOOGLE_CLIENT_SECRET: ${{ secrets.CEKLIS_GOOGLE_CLIENT_SECRET }}
         with:
           tauriScript: bun run tauri
           tagName: ${{ github.ref_name }}

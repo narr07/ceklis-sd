@@ -499,7 +499,7 @@ export function buildSkbmBlocks(profil: Profil, state: SkbmState, hasil: HasilSk
       kecil: true,
       head: ['NO', 'NAMA', 'NIP', 'PANGKAT/ GOLONGAN RUANG', 'JABATAN', 'JENIS GURU', 'TUGAS MENGAJAR', ...KELAS_HEAD, 'JUMLAH JAM'],
       kelompok: [{ mulai: 7, jumlah: 6, teks: 'Jumlah Jam Mengajar per-Rombel' }],
-      widths: [3, 15, 12, 12, 7, 8, 11, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 5],
+      widths: [3, 15, 11.5, 11.5, 7, 8, 11, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 6],
       align: ['center', 'left', 'left', 'left', 'center', 'center', 'center', ...tengah(6), 'center'],
       rows: hasil.baris.map((b, i) => [
         String(i + 1), b.nama, b.nip, b.pangkat, b.jabatan, b.jenisGuru, b.tugasLabel,
@@ -518,7 +518,7 @@ export function buildSkbmBlocks(profil: Profil, state: SkbmState, hasil: HasilSk
       kecil: true,
       head: ['NO', 'NAMA', 'NIP', 'PANGKAT/ GOLONGAN RUANG', 'JABATAN', 'JENIS GURU', 'TUGAS MENGAJAR', ...KELAS_HEAD, 'JUMLAH'],
       kelompok: [{ mulai: 7, jumlah: 6, teks: 'Jumlah Siswa per-Rombel' }],
-      widths: [3, 15, 12, 12, 7, 8, 11, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 5],
+      widths: [3, 15, 11.5, 11.5, 7, 8, 11, 4.5, 4.5, 4.5, 4.5, 4.5, 4.5, 6],
       align: ['center', 'left', 'left', 'left', 'center', 'center', 'center', ...tengah(6), 'center'],
       rows: hasil.baris.map((b, i) => [
         String(i + 1), b.nama, b.nip, b.pangkat, b.jabatan, b.jenisGuru, b.tugasLabel,

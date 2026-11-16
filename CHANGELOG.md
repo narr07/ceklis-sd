@@ -1,5 +1,11 @@
 # Changelog
 
+## Belum dirilis
+- **Simpan PDF** di template dokumen, SK Beban Mengajar & Jadwal, dan Daftar 1. Di aplikasi desktop, PDF dibuat langsung oleh WebView2 (`Page.printToPDF`) sehingga sama dengan pratinjau, termasuk halaman lanskap Lampiran I–II dan margin seperti file .docx; lokasi simpan dipilih lewat dialog Windows. Di peramban, tombol membuka dialog cetak ("Simpan sebagai PDF").
+- **Google Drive sekolah** (Profil → Database): hubungkan akun Google sekolah lewat browser (OAuth loopback + PKCE, izin hanya `drive.file`). Token tersimpan di Windows Credential Manager. Tombol **Simpan ke Drive** di template dokumen, SK Beban Mengajar & Jadwal, dan Daftar 1 menyimpan PDF/Word/Excel ke `Ceklis SD/Dokumen/<periode>`; berkas bernama sama diperbarui, tidak digandakan.
+- **Sinkron database lewat Google Drive**: database dienkripsi di komputer (Argon2id + XChaCha20-Poly1305) dengan kata sandi sekolah sebelum diunggah. Ambil dari Drive membuat backup lokal dulu; perubahan dari komputer lain terdeteksi sebagai konflik dengan pilihan ambil/timpa. Di komputer baru, NPSN bisa diketik untuk mencari salinan database.
+- **Perbarui SPTJM** untuk tahun ajaran baru: bila sudah ada SPTJM, impor PDF baru menampilkan ringkasan perubahan dulu (siswa baru per kelas, lulus kelas 6, keluar/mutasi, naik kelas, pindah rombel, GTK masuk/keluar, peringatan bila SPTJM lebih lama atau milik sekolah lain). Isian BB/TB dan agama siswa yang keluar bisa dibersihkan dari Daftar 1; gelar dan TMT GTK tetap dipertahankan; backup dibuat sebelum diterapkan.
+
 ## 1.3.0
 - **SK Beban Mengajar (SKBM) & Jadwal Pelajaran** (halaman `/skbm`): tugas tiap guru (kepala sekolah, guru kelas, guru mapel) ditebak dari Profil dan bisa diubah; struktur JJM per kelas; jumlah siswa per rombel dari SPTJM atau manual, termasuk rekap peserta pramuka; tugas bimbingan. Menghasilkan SK + Lampiran I (pemetaan jam, mendatar), II (siswa per rombel, mendatar), III (bimbingan), IV (pengelolaan kinerja) dalam satu file .docx, dengan rujukan diktum ke lampiran yang benar.
 - **Penyusun jadwal 5 hari**: jam guru mapel (PAI, PJOK, dll.) ditempatkan sebagai blok berurutan dengan backtracking sehingga satu guru tidak pernah mengajar dua kelas pada jam yang sama; sisa jam guru kelas disebar per 2 jam. Jadwal bisa diubah per sel, bentrok dan selisih JJM ditandai, dan bisa diunduh sebagai .docx.

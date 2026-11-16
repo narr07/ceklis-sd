@@ -95,6 +95,7 @@ function jalankanReset() {
           :actions="[{ label: 'Impor SPTJM Dapodik', color: 'warning', variant: 'outline', onClick: () => { seksi = 'sptjm' } }]"
         />
 
+        <GoogleDrivePanel v-if="seksi === 'semua' || seksi === 'database'" />
         <DatabaseSyncPanel v-if="seksi === 'semua' || seksi === 'database'" />
 
         <SptjmImportPanel v-if="seksi === 'semua' || seksi === 'sptjm'" />

@@ -60,7 +60,7 @@ function barisMeta(v: string) {
       v-for="(page, pi) in pages"
       :key="pi"
       class="paper mx-auto w-full rounded-sm shadow-lg ring-1 ring-black/5"
-      :class="page.orientasi === 'landscape' ? 'max-w-[297mm] px-[5%] py-[4%]' : 'max-w-[210mm] px-[9%] py-[7%]'"
+      :class="page.orientasi === 'landscape' ? 'lanskap max-w-[297mm] px-[5%] py-[4%]' : 'tegak max-w-[210mm] px-[9%] py-[7%]'"
     >
       <template v-for="(b, bi) in page.blocks" :key="bi">
         <!-- KOP -->

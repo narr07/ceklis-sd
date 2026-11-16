@@ -60,6 +60,10 @@ export interface SyncConfig {
   /** Versi (`updatedAt`) data server yang terakhir dikirim/diambil perangkat ini; dipakai deteksi konflik. */
   serverUpdatedAt: string
   autoBackup: boolean
+  /** Versi berkas database di Google Drive yang terakhir dikirim/diambil perangkat ini. */
+  driveVersi: string
+  /** Waktu sinkron Google Drive terakhir dari perangkat ini. */
+  driveTerakhir: string
 }
 
 export interface Status { done: Record<string, boolean>, notes: Record<string, string> }
@@ -86,6 +90,8 @@ const DEFAULT_SYNC: SyncConfig = {
   lastSyncedAt: '',
   serverUpdatedAt: '',
   autoBackup: true,
+  driveVersi: '',
+  driveTerakhir: '',
 }
 
 const periodeAwal = (): Periode => periodeSekarang()

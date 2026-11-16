@@ -17,6 +17,10 @@ const {
   onPilihXlsx,
   unduhExcel,
   cetakLaporan,
+  pdfLangsung,
+  membuatPdf,
+  simpanPdfLaporan,
+  menuDriveDaftar1,
   tanggalLaporanDaftar1,
   tahunItems,
   bulanIni,
@@ -66,7 +70,7 @@ const {
               size="sm"
               icon="i-lucide-file-up"
               :loading="memprosesSptjm"
-              label="Impor SPTJM (PDF)"
+              :label="rekap.sumberSiswa === 'sptjm' ? 'Perbarui SPTJM' : 'Impor SPTJM (PDF)'"
               class="shrink-0"
               @click="sptjmFileInput?.click()"
             />
@@ -90,11 +94,23 @@ const {
               @click="unduhExcel"
             />
             <UButton
+              v-if="pdfLangsung"
+              color="neutral"
+              variant="soft"
+              size="sm"
+              icon="i-lucide-file-type"
+              label="Simpan PDF"
+              class="shrink-0"
+              :loading="membuatPdf"
+              @click="simpanPdfLaporan"
+            />
+            <SimpanKeDrive :items="menuDriveDaftar1" />
+            <UButton
               color="neutral"
               variant="soft"
               size="sm"
               icon="i-lucide-printer"
-              label="Cetak / PDF"
+              :label="pdfLangsung ? 'Cetak' : 'Cetak / PDF'"
               class="shrink-0"
               @click="cetakLaporan"
             />

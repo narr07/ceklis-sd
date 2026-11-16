@@ -4,7 +4,10 @@ compile_error!("ceklis-sd hanya ditujukan untuk Windows.");
 use tauri::Manager;
 
 mod commands;
+mod gdrive;
+mod pdf;
 mod safety;
+mod sandi;
 mod storage;
 
 pub fn run() {
@@ -36,6 +39,19 @@ pub fn run() {
             commands::apply_sync_envelope,
             commands::open_data_folder,
             commands::open_sp_datadik,
+            commands::simpan_pdf,
+            commands::google_status,
+            commands::google_masuk,
+            commands::google_batal_masuk,
+            commands::google_putus,
+            commands::drive_atur_sandi,
+            commands::drive_lupakan_sandi,
+            commands::drive_info_database,
+            commands::drive_kirim_database,
+            commands::drive_ambil_database,
+            commands::drive_simpan_berkas,
+            commands::drive_simpan_pdf,
+            commands::drive_buka_folder,
         ])
         .run(tauri::generate_context!())
         .expect("gagal menjalankan Ceklis SD");

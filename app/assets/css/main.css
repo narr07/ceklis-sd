@@ -73,6 +73,37 @@
 .paper table.doc-table.kecil th { padding: 1px 3px; line-height: 1.2; }
 .paper table.doc-table.kecil th { font-size: 7.5pt; }
 
+/* ── Area cetak dokumen (Simpan PDF / Cetak): hanya tampil saat mode cetak ── */
+#area-cetak { display: none; }
+
+/* Halaman bernama: tegak & lanskap dalam satu dokumen, margin sama dengan file .docx. */
+@page tegak { size: A4 portrait; margin: 20mm 20mm 20mm 30mm; }
+@page lanskap { size: A4 landscape; margin: 18mm 20mm; }
+
+@media print {
+  /* Sembunyikan semua isi body selain area cetak (aplikasi, toast, modal, popover). */
+  html.mode-cetak body > *:not(#area-cetak) { display: none !important; }
+  html.mode-cetak #area-cetak { display: block !important; }
+  html.mode-cetak, html.mode-cetak body { background: #fff !important; }
+  #area-cetak .paper {
+    max-width: none !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: #fff !important;
+    break-after: page;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  #area-cetak .paper:last-child { break-after: auto; }
+  #area-cetak .paper.tegak { page: tegak; }
+  #area-cetak .paper.lanskap { page: lanskap; }
+  /* Baris tabel data tidak terpotong antarhalaman; Menimbang/Mengingat yang panjang boleh berlanjut. */
+  #area-cetak .paper table.doc-table tr { break-inside: avoid; }
+}
+
 @media print {
   header, nav, aside, .no-print { display: none !important; }
   html, body {

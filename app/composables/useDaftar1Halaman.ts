@@ -328,6 +328,50 @@ function buatDaftar1Halaman() {
     window.print()
   }
 
+  // Simpan PDF memakai lembar cetak Daftar 1 yang sedang tampil (aturan @page F4/A4 ikut terpakai).
+  const { isDesktop: pdfLangsung, simpanPdf } = useCetakDokumen()
+  const membuatPdf = ref(false)
+  async function simpanPdfLaporan() {
+    if (tabAktif.value !== 'rekap') {
+      tabAktif.value = 'rekap'
+      await nextTick()
+    }
+    membuatPdf.value = true
+    try {
+      const nama = `Daftar_1_${profil.value.sekolah}_${daftar1.value.bulan}_${daftar1.value.tahun}`.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_')
+      const path = await simpanPdf(nama)
+      if (path) toast.add({ title: 'PDF tersimpan', description: path, color: 'success', icon: 'i-lucide-check' })
+    }
+    catch (e) {
+      toast.add({ title: 'Gagal membuat PDF', description: String(e), color: 'error' })
+    }
+    finally {
+      membuatPdf.value = false
+    }
+  }
+
+  const drive = useGoogleDrive()
+  const folderDriveDaftar1 = computed(() => `Daftar 1 ${daftar1.value.tahun}`)
+  const namaDaftar1 = () => `Daftar_1_${profil.value.sekolah}_${daftar1.value.bulan}_${daftar1.value.tahun}`.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_')
+  const menuDriveDaftar1 = [[
+    {
+      label: 'PDF (lembar laporan)',
+      icon: 'i-lucide-file-type',
+      onSelect: async () => {
+        if (tabAktif.value !== 'rekap') {
+          tabAktif.value = 'rekap'
+          await nextTick()
+        }
+        await drive.simpanPdf(namaDaftar1(), folderDriveDaftar1.value)
+      },
+    },
+    {
+      label: 'Excel (.xlsx)',
+      icon: 'i-lucide-sheet',
+      onSelect: () => drive.simpanBerkas(() => buildDaftar1XlsxBlob(profil.value, daftar1.value), namaDaftar1(), 'xlsx', folderDriveDaftar1.value),
+    },
+  ]]
+
   function jalankanResetDaftar1() {
     resetDaftar1()
     resetModalOpen.value = false
@@ -397,6 +441,10 @@ function buatDaftar1Halaman() {
     onPilihXlsx,
     unduhExcel,
     cetakLaporan,
+    pdfLangsung,
+    membuatPdf,
+    simpanPdfLaporan,
+    menuDriveDaftar1,
     jalankanResetDaftar1,
   }
 }

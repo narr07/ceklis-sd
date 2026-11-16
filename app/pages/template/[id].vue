@@ -60,6 +60,29 @@ async function unduh() {
   finally { loading.value = false }
 }
 
+const { isDesktop, simpanPdf } = useCetakDokumen()
+const membuatPdf = ref(false)
+async function simpanSebagaiPdf() {
+  membuatPdf.value = true
+  try {
+    const path = await simpanPdf(dok.judul.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_'), blocks.value)
+    if (path) toast.add({ title: 'PDF tersimpan', description: path, color: 'success', icon: 'i-lucide-check' })
+  }
+  catch (e) {
+    toast.add({ title: 'Gagal membuat PDF', description: String(e), color: 'error' })
+  }
+  finally { membuatPdf.value = false }
+}
+
+const drive = useGoogleDrive()
+const { periode } = usePeriode()
+const namaDok = computed(() => dok.judul.replace(/[^\w\s-]/g, '').replace(/\s+/g, '_'))
+const folderDrive = computed(() => folderPeriodeDrive(periode.value.ta, periode.value.semester))
+const menuDrive = computed(() => [[
+  { label: 'PDF', icon: 'i-lucide-file-type', onSelect: () => drive.simpanPdf(namaDok.value, folderDrive.value, blocks.value) },
+  { label: 'Word (.docx)', icon: 'i-lucide-file-text', onSelect: () => drive.simpanBerkas(() => buildDocx(blocks.value, profil.value), namaDok.value, 'docx', folderDrive.value) },
+]])
+
 function jalankanKembalikan() {
   nilai.value = awal()
   resetModalOpen.value = false
@@ -154,8 +177,18 @@ function jalankanKembalikan() {
     </template>
 
     <template #footer>
-      <div class="border-t border-default p-3">
-        <UButton block icon="i-lucide-file-down" :loading="loading" label="Unduh Dokumen (.docx)" @click="unduh" />
+      <div class="grid gap-2 border-t border-default p-3 sm:grid-cols-2">
+        <UButton block icon="i-lucide-file-down" :loading="loading" label="Unduh .docx" @click="unduh" />
+        <UButton
+          block
+          color="neutral"
+          variant="outline"
+          icon="i-lucide-file-type"
+          :loading="membuatPdf"
+          :label="isDesktop ? 'Simpan PDF' : 'Cetak / PDF'"
+          @click="simpanSebagaiPdf"
+        />
+        <SimpanKeDrive :items="menuDrive" size="md" block class="sm:col-span-2" />
       </div>
     </template>
   </UDashboardPanel>
@@ -183,6 +216,16 @@ function jalankanKembalikan() {
             class="lg:hidden"
             @click="mobileView = 'form'"
           />
+          <UButton
+            size="sm"
+            color="neutral"
+            variant="outline"
+            icon="i-lucide-file-type"
+            :loading="membuatPdf"
+            :label="isDesktop ? 'Simpan PDF' : 'Cetak / PDF'"
+            @click="simpanSebagaiPdf"
+          />
+          <SimpanKeDrive :items="menuDrive" class="hidden sm:inline-flex" />
           <UButton size="sm" icon="i-lucide-file-down" :loading="loading" label="Unduh .docx" @click="unduh" />
         </template>
       </UDashboardNavbar>

@@ -14,3 +14,6 @@ data-pribadi/
 
 # Indeks alat bantu lokal
 graft/
+
+# Client OAuth Google Desktop (lokal); di CI diisi lewat env saat build
+src-tauri/google-client.json

@@ -90,7 +90,7 @@ async function onPilihPdf(e: Event) {
             color="primary"
             icon="i-lucide-file-up"
             :loading="memproses"
-            label="Impor SPTJM Dapodik (PDF)"
+            :label="dapodik ? 'Perbarui SPTJM (PDF)' : 'Impor SPTJM Dapodik (PDF)'"
             @click="pilihFile"
           />
           <UButton

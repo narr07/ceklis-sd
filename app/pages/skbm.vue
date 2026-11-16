@@ -29,6 +29,62 @@ const blokJadwal = computed(() => (skbm.value.jadwal
   ? buildJadwalBlocks(profil.value, skbm.value.jadwal, skbm.value.pengaturanJadwal, hasil.value, skbm.value)
   : []))
 
+const { isDesktop, simpanPdf } = useCetakDokumen()
+const membuatPdf = ref<'sk' | 'jadwal' | null>(null)
+
+async function pdf(jenis: 'sk' | 'jadwal') {
+  if (jenis === 'jadwal' && !skbm.value.jadwal) {
+    toast.add({ title: 'Jadwal belum disusun', description: 'Buka tab Jadwal Pelajaran lalu klik Susun Jadwal Otomatis.', color: 'warning' })
+    tab.value = 'jadwal'
+    return
+  }
+  membuatPdf.value = jenis
+  try {
+    const path = await simpanPdf(
+      namaBerkas(jenis === 'sk' ? 'SK_Beban_Mengajar' : 'Jadwal_Pelajaran'),
+      jenis === 'sk' ? blokSk.value : blokJadwal.value,
+    )
+    if (path) toast.add({ title: 'PDF tersimpan', description: path, color: 'success', icon: 'i-lucide-check' })
+  }
+  catch (e) {
+    toast.add({ title: 'Gagal membuat PDF', description: String(e), color: 'error' })
+  }
+  finally {
+    membuatPdf.value = null
+  }
+}
+
+const menuPdf = [[
+  { label: 'SK + Lampiran I–IV', icon: 'i-lucide-file-badge', onSelect: () => pdf('sk') },
+  { label: 'Jadwal Pelajaran', icon: 'i-lucide-calendar-range', onSelect: () => pdf('jadwal') },
+]]
+
+const drive = useGoogleDrive()
+const folderDrive = computed(() => folderPeriodeDrive(skbm.value.tahunAjaran, skbm.value.semester))
+function keDrive(jenis: 'sk' | 'jadwal', format: 'pdf' | 'docx') {
+  if (jenis === 'jadwal' && !skbm.value.jadwal) {
+    toast.add({ title: 'Jadwal belum disusun', description: 'Buka tab Jadwal Pelajaran lalu klik Susun Jadwal Otomatis.', color: 'warning' })
+    tab.value = 'jadwal'
+    return
+  }
+  const nama = namaBerkas(jenis === 'sk' ? 'SK_Beban_Mengajar' : 'Jadwal_Pelajaran')
+  const blok = jenis === 'sk' ? blokSk.value : blokJadwal.value
+  if (format === 'pdf') return drive.simpanPdf(nama, folderDrive.value, blok)
+  return drive.simpanBerkas(() => buildDocx(blok, profil.value), nama, 'docx', folderDrive.value)
+}
+const menuDrive = [
+  [
+    { type: 'label' as const, label: 'SK + Lampiran I–IV' },
+    { label: 'PDF', icon: 'i-lucide-file-type', onSelect: () => keDrive('sk', 'pdf') },
+    { label: 'Word (.docx)', icon: 'i-lucide-file-text', onSelect: () => keDrive('sk', 'docx') },
+  ],
+  [
+    { type: 'label' as const, label: 'Jadwal Pelajaran' },
+    { label: 'PDF', icon: 'i-lucide-file-type', onSelect: () => keDrive('jadwal', 'pdf') },
+    { label: 'Word (.docx)', icon: 'i-lucide-file-text', onSelect: () => keDrive('jadwal', 'docx') },
+  ],
+]
+
 const mengunduh = ref<'sk' | 'jadwal' | null>(null)
 const namaBerkas = (awal: string) =>
   `${awal}_${profil.value.sekolah}_${skbm.value.tahunAjaran}_Semester_${skbm.value.semester === 'genap' ? '2' : '1'}`
@@ -77,6 +133,18 @@ async function unduh(jenis: 'sk' | 'jadwal') {
         </template>
 
         <template #right>
+          <UDropdownMenu :items="menuPdf">
+            <UButton
+              color="neutral"
+              variant="outline"
+              size="sm"
+              icon="i-lucide-file-type"
+              trailing-icon="i-lucide-chevron-down"
+              :label="isDesktop ? 'Simpan PDF' : 'Cetak / PDF'"
+              :loading="!!membuatPdf"
+            />
+          </UDropdownMenu>
+          <SimpanKeDrive :items="menuDrive" />
           <UButton
             color="neutral"
             variant="outline"

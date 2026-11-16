@@ -151,5 +151,7 @@ const links = computed<NavigationMenuItem[][]>(() => {
     </UDashboardGroup>
 
     <SambutanAwal />
+    <SptjmPembaruanModal />
+    <AreaCetak />
   </UApp>
 </template>
